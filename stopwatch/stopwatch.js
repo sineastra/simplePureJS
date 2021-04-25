@@ -43,6 +43,11 @@ function step (display) {
 
 	let diff = Date.now() - startTime
 
+	if (diff > 1000) {
+		stop()
+		return
+	}
+
 	updateTimer(Math.floor(diff / 1000))
 	display(timer)
 }
