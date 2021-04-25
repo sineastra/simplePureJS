@@ -1,5 +1,5 @@
-// when using implement error handling for NaN arguments, parse the data as 3 arguments, not as a time string.
-// there are literally hundreds of time strings implementations, wont bother with them at all.
+// Accepts date, returns the weekday the date was on. Absolutely correct, tested on at least 20 dates from
+// 1700 to 2021. NAILED. However applies for Gregorian calendar only. That's 1582 year and above.
 
 const dayFinder = (day, month, year) => {
 	const monthKeys = {
@@ -40,8 +40,9 @@ const dayFinder = (day, month, year) => {
 			Number(yearDigits) + Math.floor(Number(yearDigits) / 4) +
 			Math.floor(Number(century) / 4)) % 7
 
-
 	return `The weekday on date ${day}/${month}/${year} is ${result < 0
 		? days[result + 7]
 		: days[result]}`
 }
+
+console.log(dayFinder(12, 4, 2021))
