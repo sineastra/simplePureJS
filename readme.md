@@ -1,4 +1,4 @@
-<h5 align="center">Set of simple JS reusable, modular utilities created by me,
+<h3 align="center">Set of simple JS reusable, modular utilities created by me,
 because you know. Writing JavaScript is awesome, fun & stuff..</h5>
 ..
 
