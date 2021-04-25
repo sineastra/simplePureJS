@@ -44,5 +44,3 @@ const dayFinder = (day, month, year) => {
 		? days[result + 7]
 		: days[result]}`
 }
-
-console.log(dayFinder(12, 4, 2021))
