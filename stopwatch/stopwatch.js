@@ -1,57 +1,61 @@
-var timeout;
-var timer = [0, 0];
+let resumeFlag = false
+let stopDiff
+let startTime
+let timer
+let interval
 
-function startTimer(timer) {
-    setTimeout(function start() {
-        drawTimer(incrTimer(timer));
-        timeout = setTimeout(start, 1000)
-    }, 1000)
-};
+const start = (display) => {
+	if (startTime === undefined)
+		startTime = Date.now()
 
-function stopTimer(timer) {
-    clearTimeout(timeout);
-    timer = [0, 0];
-    drawTimer(timer);
+	interval = setInterval(() => step(display), 100)
 }
 
-function incrTimer(timer) {
-    timer[1]++;
-    if (parseInt(timer[1]) >= 60) {
-        timer[0]++;
-        timer[1] = `0`;
+const stop = () => {
+	resumeFlag = true
+	stopDiff = Date.now() - startTime
 
-        if (parseInt(timer[0]) >= 60) {
-            timer[0] = 0
-        };
-    };
-
-    return timer;
-};
-
-function drawTimer(timer) {
-    document.getElementById(`time`).innerHTML = timer.map(x => `${x}`.padStart(2, `0`)).join(`:`);
-};
-
-function changeDisabled(x) {
-    x.disabled === true ? x.disabled = false : x.disabled = true;
-
-    return x;
-};
-
-function timerHandler(e) {
-    const buttons = document.getElementsByTagName(`button`);
-
-    if (e.target.id === `startBtn` || e.target.id === `stopBtn`) {
-        [...buttons].map(changeDisabled);
-
-        e.target.id === `startBtn` ? startTimer(timer) : stopTimer(timer);
-    };
-
-    return e;
+	clearInterval(interval)
 }
 
-function stopwatch() {
-    document.addEventListener('click', timerHandler)
-};
+const reset = () => {
+	startTime = Date.now()
+	resumeFlag = false
+	stopDiff = undefined
+	timer = undefined
+	interval = undefined
+}
 
-document.addEventListener(`DOMContentLoaded`, stopwatch)
+const updateTimer = (diff) => {
+	const seconds = `${Math.floor(diff % 60)}`.padStart(2, '0')
+	const minutes = `${Math.floor(diff / 60 >= 60 ? 0 : diff / 60)}`.padStart(2, '0')
+	const hours = `${Math.floor(diff / 3600)}`.padStart(2, '0')
+
+	timer = `${hours}:${minutes}:${seconds}`
+}
+
+
+function step (display) {
+	if (resumeFlag) {
+		startTime = Date.now() - stopDiff
+		resumeFlag = false
+	}
+
+	let diff = Date.now() - startTime
+
+	updateTimer(Math.floor(diff / 1000))
+	display(timer)
+}
+
+export {
+	start,
+	stop,
+	reset,
+	timer
+}
+
+// simple pure JS timer/stopwatch with functionality for START/STOP and RESET.
+// the only needed thing is passing display function to the start() function,
+// which will be executed, every time the timer updates. The thing the timer will do is take that
+// display function and pass to it a 'timer' argument -> the updated timer. What the display function
+// does, eats and where she sleeps, is not a business of the timer, which is a... timer.
